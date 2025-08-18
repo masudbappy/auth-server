@@ -53,6 +53,7 @@ public class UserService {
 
         user.setFirstName(registerRequest.getFirstName());
         user.setLastName(registerRequest.getLastName());
+        user.setUsername(registerRequest.getUsername());
 
         Set<String> strRoles = registerRequest.getRoles();
         Set<Role> roles = new HashSet<>();

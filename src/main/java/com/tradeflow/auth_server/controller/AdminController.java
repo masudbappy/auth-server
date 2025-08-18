@@ -39,7 +39,7 @@ public class AdminController {
 		try {
 			User user = userService.registerUser(registerRequest);
 			logger.info("Admin created user: {}", user.getUsername());
-			return ResponseEntity.ok(new UserResponse(user));
+			return ResponseEntity.ok("Created users successfully: " + user.getUsername());
 		} catch (RuntimeException e) {
 			logger.error("User creation failed: {}", e.getMessage());
 			return ResponseEntity.badRequest()
@@ -47,14 +47,12 @@ public class AdminController {
 		}
 	}
 
-	/*@GetMapping("/users")
+	@GetMapping("/users")
 	public ResponseEntity<?> getAllUsers() {
 		try {
-			List<User> users = userService.getAllUsers();
-			List<UserResponse> userResponses = users.stream()
-					.map(UserResponse::new)
-					.collect(Collectors.toList());
-			return ResponseEntity.ok(userResponses);
+			List<UserResponse> users = userService.getAllUsers();
+			// Remove the redundant mapping since users is already List<UserResponse>
+			return ResponseEntity.ok(users);
 		} catch (Exception e) {
 			logger.error("Failed to fetch users: {}", e.getMessage());
 			return ResponseEntity.badRequest()
@@ -62,7 +60,7 @@ public class AdminController {
 		}
 	}
 
-	@PutMapping("/users/{userId}")
+	/*@PutMapping("/users/{userId}")
 	public ResponseEntity<?> updateUser(@PathVariable Long userId,
 	                                    @Valid @RequestBody UpdateUserRequest updateRequest) {
 		try {
@@ -74,9 +72,9 @@ public class AdminController {
 			return ResponseEntity.badRequest()
 					.body(new MessageResponse(e.getMessage()));
 		}
-	}
+	}*/
 
-	@PostMapping("/users/{userId}/reset-password")
+	/*@PostMapping("/users/{userId}/reset-password")
 	public ResponseEntity<?> resetUserPassword(@PathVariable Long userId,
 	                                           @Valid @RequestBody ResetPasswordRequest resetRequest) {
 		try {
@@ -88,9 +86,9 @@ public class AdminController {
 			return ResponseEntity.badRequest()
 					.body(new MessageResponse(e.getMessage()));
 		}
-	}
+	}*/
 
-	@PutMapping("/users/{userId}/status")
+	/*@PutMapping("/users/{userId}/status")
 	public ResponseEntity<?> updateUserStatus(@PathVariable Long userId,
 	                                          @RequestBody UpdateStatusRequest statusRequest) {
 		try {
