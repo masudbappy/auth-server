@@ -164,6 +164,67 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public UserResponse updateUserByAdmin(Long id, RegisterRequest updateRequest) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        // Update user details
+        user.setUsername(updateRequest.getUsername());
+        user.setEmail(updateRequest.getEmail());
+
+        // Update password if provided
+        if (updateRequest.getPassword() != null && !updateRequest.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
+        }
+
+        // Update roles if provided
+        if (updateRequest.getRoles() != null && !updateRequest.getRoles().isEmpty()) {
+            Set<Role> roles = new HashSet<>();
+            updateRequest.getRoles().forEach(roleName -> {
+                switch (roleName.toLowerCase()) {
+                    case "admin":
+                        Role adminRole = roleRepository.findByName("ADMIN")
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(adminRole);
+                        break;
+                    case "manager":
+                        Role managerRole = roleRepository.findByName("MANAGER")
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(managerRole);
+                        break;
+                    case "salesman":
+                        Role staffRole = roleRepository.findByName("SALESMAN")
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(staffRole);
+                        break;
+                    default:
+                        Role viewerRole = roleRepository.findByName("VIEWER")
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(viewerRole);
+                }
+            });
+            user.setRoles(roles);
+        }
+
+        User updatedUser = userRepository.save(user);
+        logger.info("User updated by admin: {}", updatedUser.getUsername());
+        return convertToUserResponse(updatedUser);
+    }
+
+    public void resetPasswordByAdmin(Long id, String newPassword) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        // Validate password is not empty
+        if (newPassword == null || newPassword.trim().isEmpty()) {
+            throw new RuntimeException("Password cannot be empty");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        logger.info("Password reset by admin for user: {}", user.getUsername());
+    }
+
     public boolean isCurrentUser(String username, Long userId) {
         Optional<User> user = userRepository.findByUsername(username);
         return user.isPresent() && user.get().getId().equals(userId);
