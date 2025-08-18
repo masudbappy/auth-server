@@ -171,6 +171,7 @@ public class UserService {
     private UserResponse convertToUserResponse(User user) {
         return new UserResponse(
                 user.getId(),
+                user.getFullName(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getFirstName(),

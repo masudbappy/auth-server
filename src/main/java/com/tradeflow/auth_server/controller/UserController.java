@@ -33,6 +33,7 @@ public class UserController {
                 .map(user -> {
                     UserResponse userResponse = new UserResponse(
                             user.getId(),
+                            user.getFullName(),
                             user.getUsername(),
                             user.getEmail(),
                             user.getFirstName(),
@@ -54,6 +55,7 @@ public class UserController {
             User updatedUser = userService.updateUser(id, userDetails);
             UserResponse userResponse = new UserResponse(
                     updatedUser.getId(),
+                    updatedUser.getFullName(),
                     updatedUser.getUsername(),
                     updatedUser.getEmail(),
                     updatedUser.getFirstName(),
@@ -89,6 +91,7 @@ public class UserController {
             User updatedUser = userService.updateUserRoles(id, roles);
             UserResponse userResponse = new UserResponse(
                     updatedUser.getId(),
+                    updatedUser.getFullName(),
                     updatedUser.getUsername(),
                     updatedUser.getEmail(),
                     updatedUser.getFirstName(),

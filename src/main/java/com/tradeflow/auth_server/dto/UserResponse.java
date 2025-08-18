@@ -1,11 +1,14 @@
 package com.tradeflow.auth_server.dto;
 
+import com.tradeflow.auth_server.model.User;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class UserResponse {
 
     private Long id;
+    private String fullName;
     private String username;
     private String email;
     private String firstName;
@@ -19,10 +22,11 @@ public class UserResponse {
     public UserResponse() {
     }
 
-    public UserResponse(Long id, String username, String email, String firstName,
+    public UserResponse(Long id, String fullName, String username, String email, String firstName,
                         String lastName, LocalDateTime createdAt, LocalDateTime updatedAt,
                         LocalDateTime lastLogin, boolean enabled, List<String> roles) {
         this.id = id;
+        this.fullName = fullName;
         this.username = username;
         this.email = email;
         this.firstName = firstName;
@@ -34,6 +38,9 @@ public class UserResponse {
         this.roles = roles;
     }
 
+    public UserResponse(User user) {
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -41,6 +48,14 @@ public class UserResponse {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getUsername() {

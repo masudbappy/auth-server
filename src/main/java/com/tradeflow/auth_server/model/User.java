@@ -46,6 +46,9 @@ public class User implements UserDetails {
     @Size(max = 100)
     private String lastName;
 
+    @Size(max = 100)
+    private String fullName;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -163,6 +166,13 @@ public class User implements UserDetails {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public LocalDateTime getCreatedAt() {

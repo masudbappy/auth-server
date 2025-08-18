@@ -22,6 +22,9 @@ public class Role {
     @Size(max = 200)
     private String description;
 
+    @Column(name = "status", nullable = false, columnDefinition = "boolean default true")
+    private boolean status = false; // Set default value
+
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 
@@ -68,6 +71,14 @@ public class Role {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     @Override
