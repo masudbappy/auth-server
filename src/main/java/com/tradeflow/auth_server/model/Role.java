@@ -22,7 +22,7 @@ public class Role {
     @Size(max = 200)
     private String description;
 
-    @Column(name = "status", nullable = false, columnDefinition = "boolean default true")
+    @Column(name = "status", nullable = false)
     private boolean status = false; // Set default value
 
     @ManyToMany(mappedBy = "roles")

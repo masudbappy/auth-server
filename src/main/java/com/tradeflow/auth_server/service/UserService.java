@@ -1,6 +1,7 @@
 package com.tradeflow.auth_server.service;
 
 import com.tradeflow.auth_server.dto.RegisterRequest;
+import com.tradeflow.auth_server.dto.UpdateRegisterRequest;
 import com.tradeflow.auth_server.dto.UserResponse;
 import com.tradeflow.auth_server.model.Role;
 import com.tradeflow.auth_server.model.User;
@@ -51,44 +52,18 @@ public class UserService {
                 registerRequest.getEmail(),
                 passwordEncoder.encode(registerRequest.getPassword()));
 
-        user.setFirstName(registerRequest.getFirstName());
-        user.setLastName(registerRequest.getLastName());
-        user.setUsername(registerRequest.getUsername());
+        user.setFullName(registerRequest.getFullName());
+        user.setEnabled(registerRequest.isEnabled());
 
-        Set<String> strRoles = registerRequest.getRoles();
-        Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null || strRoles.isEmpty()) {
-            Role userRole = roleRepository.findByName("VIEWER")
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName("ADMIN")
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-                        break;
-                    case "manager":
-                        Role managerRole = roleRepository.findByName("MANAGER")
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(managerRole);
-                        break;
-                    case "staff":
-                        Role staffRole = roleRepository.findByName("STAFF")
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(staffRole);
-                        break;
-                    default:
-                        Role viewerRole = roleRepository.findByName("VIEWER")
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(viewerRole);
-                }
+        if (registerRequest.getRoles() != null && !registerRequest.getRoles().isEmpty()) {
+            Set<Role> roles = new HashSet<>();
+            registerRequest.getRoles().forEach(roleName -> {
+                Role role = getRoleByName(roleName.toLowerCase());
+                role.setStatus(registerRequest.isStatus()); // Set role status
+                roles.add(role);
             });
+            user.setRoles(roles);
         }
-
-        user.setRoles(roles);
         User savedUser = userRepository.save(user);
 
         logger.info("User registered successfully: {}", savedUser.getUsername());
@@ -134,6 +109,7 @@ public class UserService {
 
         user.setFirstName(userDetails.getFirstName());
         user.setLastName(userDetails.getLastName());
+        user.setFullName(userDetails.getFullName());
         user.setEmail(userDetails.getEmail());
 
         if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
@@ -164,44 +140,23 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public UserResponse updateUserByAdmin(Long id, RegisterRequest updateRequest) {
+    public UserResponse updateUserByAdmin(Long id, UpdateRegisterRequest updateRequest) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
         // Update user details
+        user.setFullName(updateRequest.getFullName());
         user.setUsername(updateRequest.getUsername());
         user.setEmail(updateRequest.getEmail());
-
-        // Update password if provided
-        if (updateRequest.getPassword() != null && !updateRequest.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
-        }
+        user.setEnabled(updateRequest.isEnabled()); // Update enabled status
 
         // Update roles if provided
         if (updateRequest.getRoles() != null && !updateRequest.getRoles().isEmpty()) {
             Set<Role> roles = new HashSet<>();
             updateRequest.getRoles().forEach(roleName -> {
-                switch (roleName.toLowerCase()) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName("ADMIN")
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-                        break;
-                    case "manager":
-                        Role managerRole = roleRepository.findByName("MANAGER")
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(managerRole);
-                        break;
-                    case "salesman":
-                        Role staffRole = roleRepository.findByName("SALESMAN")
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(staffRole);
-                        break;
-                    default:
-                        Role viewerRole = roleRepository.findByName("VIEWER")
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(viewerRole);
-                }
+                Role role = getRoleByName(roleName.toLowerCase());
+                role.setStatus(updateRequest.isStatus()); // Set role status
+                roles.add(role);
             });
             user.setRoles(roles);
         }
@@ -209,6 +164,23 @@ public class UserService {
         User updatedUser = userRepository.save(user);
         logger.info("User updated by admin: {}", updatedUser.getUsername());
         return convertToUserResponse(updatedUser);
+    }
+
+    private Role getRoleByName(String roleName) {
+        switch (roleName) {
+            case "admin":
+                return roleRepository.findByName("ADMIN")
+                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            case "manager":
+                return roleRepository.findByName("MANAGER")
+                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            case "salesman":
+                return roleRepository.findByName("SALESMAN")
+                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            default:
+                return roleRepository.findByName("VIEWER")
+                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        }
     }
 
     public void resetPasswordByAdmin(Long id, String newPassword) {

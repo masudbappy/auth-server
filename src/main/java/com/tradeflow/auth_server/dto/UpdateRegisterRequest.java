@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.Set;
 
-public class RegisterRequest {
+public class UpdateRegisterRequest {
 
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
@@ -15,10 +15,6 @@ public class RegisterRequest {
     @Size(max = 100, message = "Email must not exceed 100 characters")
     @Email(message = "Email should be valid")
     private String email;
-
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, max = 120, message = "Password must be between 6 and 120 characters")
-    private String password;
 
     @Size(max = 100, message = "First name must not exceed 100 characters")
     private String firstName;
@@ -36,7 +32,7 @@ public class RegisterRequest {
     private boolean status = true; // For role status
 
     // Constructors
-    public RegisterRequest() {}
+    public UpdateRegisterRequest() {}
 
     // Getters and setters
     public String getUsername() {
@@ -53,14 +49,6 @@ public class RegisterRequest {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getFirstName() {

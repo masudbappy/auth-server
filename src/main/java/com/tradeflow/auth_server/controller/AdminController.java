@@ -2,6 +2,8 @@ package com.tradeflow.auth_server.controller;
 
 import com.tradeflow.auth_server.dto.MessageResponse;
 import com.tradeflow.auth_server.dto.RegisterRequest;
+import com.tradeflow.auth_server.dto.ResetPasswordRequest;
+import com.tradeflow.auth_server.dto.UpdateRegisterRequest;
 import com.tradeflow.auth_server.dto.UserResponse;
 import com.tradeflow.auth_server.model.User;
 import com.tradeflow.auth_server.service.UserService;
@@ -11,7 +13,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -39,6 +49,19 @@ public class AdminController {
         }
     }
 
+    @PutMapping("/users/{id}")
+    public ResponseEntity<?> updateUserByAdmin(@PathVariable("id") Long id, @Valid @RequestBody UpdateRegisterRequest updateRequest) {
+        try {
+            UserResponse updatedUser = userService.updateUserByAdmin(id, updateRequest);
+            logger.info("Admin updated user with ID: {}", id);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            logger.error("User update failed: {}", e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse(e.getMessage()));
+        }
+    }
+
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers() {
         try {
@@ -52,23 +75,11 @@ public class AdminController {
         }
     }
 
-    @PutMapping("/users/{id}")
-    public ResponseEntity<?> updateUserByAdmin(@PathVariable Long id, @Valid @RequestBody RegisterRequest updateRequest) {
-        try {
-            UserResponse updatedUser = userService.updateUserByAdmin(id, updateRequest);
-            logger.info("Admin updated user with ID: {}", id);
-            return ResponseEntity.ok(updatedUser);
-        } catch (RuntimeException e) {
-            logger.error("User update failed: {}", e.getMessage());
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse(e.getMessage()));
-        }
-    }
-
     @PutMapping("/users/{id}/reset-password")
-    public ResponseEntity<?> resetPasswordByAdmin(@PathVariable Long id, @RequestBody String newPassword) {
+    public ResponseEntity<?> resetPasswordByAdmin(@PathVariable("id") Long id,
+                                                  @Valid @RequestBody ResetPasswordRequest resetRequest) {
         try {
-            userService.resetPasswordByAdmin(id, newPassword);
+            userService.resetPasswordByAdmin(id, resetRequest.getNewPassword());
             logger.info("Admin reset password for user with ID: {}", id);
             return ResponseEntity.ok(new MessageResponse("Password reset successfully"));
         } catch (RuntimeException e) {
@@ -79,7 +90,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
         try {
             userService.deleteUser(id);
             logger.info("Admin deleted user with ID: {}", id);
