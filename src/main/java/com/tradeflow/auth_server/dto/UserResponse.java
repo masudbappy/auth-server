@@ -8,11 +8,7 @@ import java.util.List;
 public class UserResponse {
 
     private Long id;
-    private String fullName;
     private String username;
-    private String email;
-    private String firstName;
-    private String lastName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime lastLogin;
@@ -22,15 +18,10 @@ public class UserResponse {
     public UserResponse() {
     }
 
-    public UserResponse(Long id, String fullName, String username, String email, String firstName,
-                        String lastName, LocalDateTime createdAt, LocalDateTime updatedAt,
+    public UserResponse(Long id, String username,LocalDateTime createdAt, LocalDateTime updatedAt,
                         LocalDateTime lastLogin, boolean enabled, List<String> roles) {
         this.id = id;
-        this.fullName = fullName;
         this.username = username;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.lastLogin = lastLogin;
@@ -50,44 +41,12 @@ public class UserResponse {
         this.id = id;
     }
 
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -134,11 +93,7 @@ public class UserResponse {
     public String toString() {
         return "UserResponse{" +
                 "id=" + id +
-                ", fullName='" + fullName + '\'' +
                 ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", lastLogin=" + lastLogin +

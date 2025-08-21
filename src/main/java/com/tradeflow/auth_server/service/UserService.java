@@ -42,17 +42,9 @@ public class UserService {
             throw new RuntimeException("Error: Username is already taken!");
         }
 
-        // Check if email already exists
-        if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            throw new RuntimeException("Error: Email is already in use!");
-        }
-
         // Create new user
         User user = new User(registerRequest.getUsername(),
-                registerRequest.getEmail(),
                 passwordEncoder.encode(registerRequest.getPassword()));
-
-        user.setFullName(registerRequest.getFullName());
         user.setEnabled(registerRequest.isEnabled());
 
         if (registerRequest.getRoles() != null && !registerRequest.getRoles().isEmpty()) {
@@ -74,10 +66,6 @@ public class UserService {
         return userRepository.findByUsernameWithRoles(username);
     }
 
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmailWithRoles(email);
-    }
-
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
@@ -92,10 +80,6 @@ public class UserService {
         return userRepository.existsByUsername(username);
     }
 
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
     public void updateLastLogin(String username) {
         userRepository.findByUsername(username).ifPresent(user -> {
             user.setLastLogin(LocalDateTime.now());
@@ -106,11 +90,6 @@ public class UserService {
     public User updateUser(Long id, User userDetails) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-
-        user.setFirstName(userDetails.getFirstName());
-        user.setLastName(userDetails.getLastName());
-        user.setFullName(userDetails.getFullName());
-        user.setEmail(userDetails.getEmail());
 
         if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
@@ -145,9 +124,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
         // Update user details
-        user.setFullName(updateRequest.getFullName());
         user.setUsername(updateRequest.getUsername());
-        user.setEmail(updateRequest.getEmail());
         user.setEnabled(updateRequest.isEnabled()); // Update enabled status
 
         // Update roles if provided
@@ -205,11 +182,7 @@ public class UserService {
     private UserResponse convertToUserResponse(User user) {
         return new UserResponse(
                 user.getId(),
-                user.getFullName(),
                 user.getUsername(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName(),
                 user.getCreatedAt(),
                 user.getUpdatedAt(),
                 user.getLastLogin(),

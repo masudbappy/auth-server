@@ -57,9 +57,6 @@ public class AuthController {
                     jwt,
                     userPrincipal.getId(),
                     userPrincipal.getUsername(),
-                    userPrincipal.getEmail(),
-                    userPrincipal.getFirstName(),
-                    userPrincipal.getLastName(),
                     userPrincipal.getRoleNames());
 
             logger.info("User {} authenticated successfully", userPrincipal.getUsername());
@@ -99,9 +96,6 @@ public class AuthController {
                     null, // Don't return token in validation response
                     user.getId(),
                     user.getUsername(),
-                    user.getEmail(),
-                    user.getFirstName(),
-                    user.getLastName(),
                     user.getRoleNames());
 
             return ResponseEntity.ok(response);
@@ -128,9 +122,6 @@ public class AuthController {
                     null,
                     user.getId(),
                     user.getUsername(),
-                    user.getEmail(),
-                    user.getFirstName(),
-                    user.getLastName(),
                     user.getRoleNames());
 
             return ResponseEntity.ok(response);

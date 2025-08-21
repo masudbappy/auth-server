@@ -31,23 +31,8 @@ public class User implements UserDetails {
     private String username;
 
     @NotBlank
-    @Size(max = 100)
-    @Email
-    @Column(unique = true)
-    private String email;
-
-    @NotBlank
     @Size(max = 120)
     private String password;
-
-    @Size(max = 100)
-    private String firstName;
-
-    @Size(max = 100)
-    private String lastName;
-
-    @Size(max = 100)
-    private String fullName;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -70,9 +55,8 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, String email, String password) {
+    public User(String username, String password) {
         this.username = username;
-        this.email = email;
         this.password = password;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -140,39 +124,8 @@ public class User implements UserDetails {
         this.username = username;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
     }
 
     public LocalDateTime getCreatedAt() {

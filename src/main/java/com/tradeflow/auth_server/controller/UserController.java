@@ -33,11 +33,7 @@ public class UserController {
                 .map(user -> {
                     UserResponse userResponse = new UserResponse(
                             user.getId(),
-                            user.getFullName(),
                             user.getUsername(),
-                            user.getEmail(),
-                            user.getFirstName(),
-                            user.getLastName(),
                             user.getCreatedAt(),
                             user.getUpdatedAt(),
                             user.getLastLogin(),
@@ -55,11 +51,7 @@ public class UserController {
             User updatedUser = userService.updateUser(id, userDetails);
             UserResponse userResponse = new UserResponse(
                     updatedUser.getId(),
-                    updatedUser.getFullName(),
                     updatedUser.getUsername(),
-                    updatedUser.getEmail(),
-                    updatedUser.getFirstName(),
-                    updatedUser.getLastName(),
                     updatedUser.getCreatedAt(),
                     updatedUser.getUpdatedAt(),
                     updatedUser.getLastLogin(),
@@ -91,11 +83,7 @@ public class UserController {
             User updatedUser = userService.updateUserRoles(id, roles);
             UserResponse userResponse = new UserResponse(
                     updatedUser.getId(),
-                    updatedUser.getFullName(),
                     updatedUser.getUsername(),
-                    updatedUser.getEmail(),
-                    updatedUser.getFirstName(),
-                    updatedUser.getLastName(),
                     updatedUser.getCreatedAt(),
                     updatedUser.getUpdatedAt(),
                     updatedUser.getLastLogin(),
@@ -114,9 +102,4 @@ public class UserController {
         return ResponseEntity.ok(isAvailable);
     }
 
-    @GetMapping("/check-email/{email}")
-    public ResponseEntity<Boolean> checkEmailAvailability(@PathVariable String email) {
-        Boolean isAvailable = !userService.existsByEmail(email);
-        return ResponseEntity.ok(isAvailable);
-    }
 }
