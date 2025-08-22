@@ -28,7 +28,7 @@ public class RoleController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Role> getRoleById(@PathVariable Long id) {
+    public ResponseEntity<Role> getRoleById(@PathVariable("id") Long id) {
         return roleService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -53,7 +53,7 @@ public class RoleController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateRole(@PathVariable Long id, @Valid @RequestBody Role roleDetails) {
+    public ResponseEntity<?> updateRole(@PathVariable("id") Long id, @Valid @RequestBody Role roleDetails) {
         try {
             Role updatedRole = roleService.updateRole(id, roleDetails);
             return ResponseEntity.ok(updatedRole);
@@ -65,7 +65,7 @@ public class RoleController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteRole(@PathVariable Long id) {
+    public ResponseEntity<?> deleteRole(@PathVariable("id") Long id) {
         try {
             roleService.deleteRole(id);
             return ResponseEntity.ok(new MessageResponse("Role deleted successfully"));
